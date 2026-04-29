@@ -209,6 +209,11 @@
                         </p>
                     </div>
 
+                    <div class="rounded-2xl border border-[#eadfd5] bg-white/80 p-5 mt-4">
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[#9d8e80]">Stok Tersisa</p>
+                        <p class="mt-2 text-lg font-semibold text-brown">{{ $transaksi->barang->stok ?? 0 }}</p>
+                    </div>
+
                     <div class="mt-5 rounded-2xl border border-[#eadfd5] bg-[#fcf8f4] p-5">
                         <div class="flex items-center justify-between gap-3">
                             <p class="text-sm font-semibold text-brown">Tanggal Pengembalian Aktual</p>
@@ -266,10 +271,6 @@
                         <div class="border-y border-dashed border-[#d8c7b8] py-5">
                             <div class="rounded-2xl border border-[#eadfd5] bg-[#fcf8f4] p-4">
                                 <p class="text-sm font-semibold text-brown">Status Sistem</p>
-                                <div class="rounded-2xl border border-[#eadfd5] bg-white/80 p-5 mt-4">
-                                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[#9d8e80]">Stok Tersisa</p>
-                                    <p class="mt-2 text-lg font-semibold text-brown">{{ $transaksi->barang->stok ?? 0 }}</p>
-                                </div>
                             </div>
                         </div>
 

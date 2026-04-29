@@ -91,7 +91,7 @@ class PeminjamanController extends Controller
             }
 
             $transaksi = Transaksi::create([
-                'kode_transaksi' => 'TRX-' . now()->format('Ymd') . '-' . strtoupper(Str::random(5)),
+                'kode_transaksi' => 'TEMP',
                 'barang_id' => $barang->id,
                 'nama_peminjam' => $validated['nama'],
                 'kelas' => $validated['kelas'],
@@ -104,6 +104,9 @@ class PeminjamanController extends Controller
                 'status' => 'Dipinjam',
                 'foto_wajah' => $fotoPath,
             ]);
+
+            $transaksi->kode_transaksi = 'BAW-' . str_pad((string) $transaksi->id, 4, '0', STR_PAD_LEFT);
+            $transaksi->save();
 
             $barang->decrement('stok');
 

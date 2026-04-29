@@ -17,3 +17,5 @@ Route::get('/sukses/{transaksi}', [PeminjamanController::class, 'sukses'])->name
 
 Route::get('/pengembalian', [PengembalianController::class, 'index'])->name('pengembalian');
 Route::post('/pengembalian/{transaksi}/proses', [PengembalianController::class, 'proses'])->name('pengembalian.proses');
+
+Route::get('/print/{transaksi}', [PeminjamanController::class, 'print'])->name('print.thermal');

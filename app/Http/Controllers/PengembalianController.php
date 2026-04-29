@@ -13,9 +13,23 @@ class PengembalianController extends Controller
         $transaksi = null;
 
         if ($request->filled('kode_transaksi')) {
-            $transaksi = Transaksi::with('barang')
-                ->where('kode_transaksi', $request->kode_transaksi)
-                ->first();
+            $input = trim($request->kode_transaksi);
+
+            if (preg_match('/^BAW-(\d+)$/i', $input, $matches)) {
+                $id = (int) $matches[1];
+
+                $transaksi = Transaksi::with('barang')
+                    ->where('id', $id)
+                    ->first();
+            } elseif (ctype_digit($input)) {
+                $transaksi = Transaksi::with('barang')
+                    ->where('id', (int) $input)
+                    ->first();
+            } else {
+                $transaksi = Transaksi::with('barang')
+                    ->where('kode_transaksi', $input)
+                    ->first();
+            }
 
             if (!$transaksi) {
                 return view('balik', [
