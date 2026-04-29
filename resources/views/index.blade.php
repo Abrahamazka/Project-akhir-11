@@ -202,7 +202,7 @@
                 </a>
 
                 <a
-                    href="{{ route('balik') }}"
+                    href="{{ route('pengembalian') }}"
                     class="btn-kembali inline-flex items-center gap-2.5 rounded-full border-2 border-[#321c04] px-9 py-[14px] text-base font-semibold transition-all duration-300">
                     <span class="text-[#321c04]">Kembalikan Barang</span>
                 </a>

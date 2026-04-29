@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -33,19 +34,20 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body class="min-h-screen bg-cream font-inter text-brown overflow-x-hidden">
 
     @php
-        $barang = request('barang', 'Laptop');
-        $tanggalPinjam = request('tanggal_pinjam', date('Y-m-d'));
-        $tanggalKembali = request('tanggal_kembali', date('Y-m-d', strtotime('+3 days')));
-        $kebutuhan = request('kebutuhan', 'Digunakan untuk praktik dan demonstrasi pembelajaran.');
-        $nama = request('nama', 'Nama Siswa');
-        $kelas = request('kelas', 'XI RPL 1');
-        $jurusan = request('jurusan', 'RPL');
-        $nisn = request('nisn', '1234567890');
-        $rfid = request('rfid', 'RFID-000000');
-        $kodeTransaksi = 'TRX-' . date('Ymd') . '-' . strtoupper(substr(md5($nama . $barang . time()), 0, 5));
+    $barang = $transaksi->barang->nama_barang ?? '-';
+    $tanggalPinjam = $transaksi->tanggal_peminjaman ?? '-';
+    $tanggalKembali = $transaksi->tanggal_pengembalian ?? '-';
+    $kebutuhan = $transaksi->kebutuhan ?? '-';
+    $nama = $transaksi->nama_peminjam ?? '-';
+    $kelas = $transaksi->kelas ?? '-';
+    $jurusan = $transaksi->jurusan ?? '-';
+    $nisn = $transaksi->nisn ?? '-';
+    $rfid = $transaksi->rfid ?? '-';
+    $kodeTransaksi = $transaksi->kode_transaksi ?? '-';
     @endphp
 
     <div class="relative min-h-screen px-4 sm:px-6 lg:px-8 pb-16">
@@ -53,13 +55,13 @@
         <div class="absolute left-10 top-28 grid grid-cols-8 gap-3 opacity-40">
             @for ($i = 0; $i < 48; $i++)
                 <span class="h-1 w-1 rounded-full bg-[#cdb9a7]"></span>
-            @endfor
+                @endfor
         </div>
 
         <div class="absolute bottom-16 right-10 grid grid-cols-8 gap-3 opacity-40">
             @for ($i = 0; $i < 48; $i++)
                 <span class="h-1 w-1 rounded-full bg-[#cdb9a7]"></span>
-            @endfor
+                @endfor
         </div>
 
         <div class="absolute right-0 top-32 h-72 w-72 rounded-full bg-[#f5c8aa]/30 blur-3xl"></div>
@@ -87,14 +89,13 @@
                     <a href="{{ route('pinjam') }}" class="rounded-full border border-[#f2b092] bg-[#fff3ec] px-5 py-2 text-sm font-semibold text-accent shadow-sm">
                         Peminjaman
                     </a>
-                    <a href="{{ route('balik') }}" class="rounded-full px-4 py-2 text-sm font-medium text-[#7b6b5d] transition hover:bg-[#f7efe7] hover:text-brown">
+                    <a href="{{ route('pengembalian') }}" class="rounded-full px-4 py-2 text-sm font-medium text-[#7b6b5d] transition hover:bg-[#f7efe7] hover:text-brown">
                         Pengembalian
                     </a>
                 </nav>
             </div>
         </header>
 
-        <!-- hero -->
         <section class="relative z-10 mx-auto mt-14 max-w-5xl text-center">
             <div class="mb-5 inline-flex items-center gap-2 rounded-full border border-[#cfe8d7] bg-[#edf8f1] px-4 py-2 text-sm font-semibold text-success">
                 <span class="h-2.5 w-2.5 rounded-full bg-success"></span>
@@ -119,11 +120,9 @@
             </p>
         </section>
 
-        <!-- konten -->
         <section class="relative z-10 mx-auto mt-10 max-w-6xl">
             <div class="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
 
-                <!-- detail utama -->
                 <div class="rounded-[32px] border border-white/60 bg-[#fffaf6]/90 p-6 shadow-soft backdrop-blur sm:p-8 md:p-10">
                     <div class="flex flex-col gap-4 border-b border-[#ece1d8] pb-6 sm:flex-row sm:items-center sm:justify-between">
                         <div>
@@ -185,6 +184,11 @@
                         </p>
                     </div>
 
+                    <div class="rounded-2xl border border-[#eadfd5] bg-white/80 p-5 mt-4">
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[#9d8e80]">Stok Tersisa</p>
+                        <p class="mt-2 text-lg font-semibold text-brown">{{ $transaksi->barang->stok ?? 0 }}</p>
+                    </div>
+
                     <div class="mt-5 rounded-2xl border border-[#eadfd5] bg-[#fcf8f4] p-5">
                         <div class="flex items-center justify-between gap-3">
                             <p class="text-sm font-semibold text-brown">RFID Terdeteksi</p>
@@ -196,7 +200,6 @@
                     </div>
                 </div>
 
-                <!-- kartu bukti / thermal -->
                 <div class="rounded-[32px] border border-white/60 bg-[#fffaf6]/90 p-6 shadow-soft backdrop-blur sm:p-8">
                     <div class="rounded-[28px] border border-[#eadfd5] bg-white p-6 shadow-sm">
                         <div class="border-b border-dashed border-[#d8c7b8] pb-5 text-center">
@@ -234,27 +237,15 @@
 
                         <div class="border-y border-dashed border-[#d8c7b8] py-5">
                             <div class="rounded-2xl border border-[#eadfd5] bg-[#fcfcfc] px-4 py-5">
-                                <div class="flex items-end justify-center gap-1 h-24">
-                                    <span class="w-1 rounded-sm bg-black h-14"></span>
-                                    <span class="w-1 rounded-sm bg-black h-20"></span>
-                                    <span class="w-0.5 rounded-sm bg-black h-16"></span>
-                                    <span class="w-1.5 rounded-sm bg-black h-24"></span>
-                                    <span class="w-0.5 rounded-sm bg-black h-12"></span>
-                                    <span class="w-1 rounded-sm bg-black h-22"></span>
-                                    <span class="w-1.5 rounded-sm bg-black h-16"></span>
-                                    <span class="w-0.5 rounded-sm bg-black h-24"></span>
-                                    <span class="w-1 rounded-sm bg-black h-18"></span>
-                                    <span class="w-1.5 rounded-sm bg-black h-20"></span>
-                                    <span class="w-0.5 rounded-sm bg-black h-14"></span>
-                                    <span class="w-1 rounded-sm bg-black h-24"></span>
-                                    <span class="w-0.5 rounded-sm bg-black h-16"></span>
-                                    <span class="w-1.5 rounded-sm bg-black h-22"></span>
-                                    <span class="w-1 rounded-sm bg-black h-12"></span>
-                                    <span class="w-0.5 rounded-sm bg-black h-20"></span>
-                                    <span class="w-1.5 rounded-sm bg-black h-24"></span>
-                                    <span class="w-1 rounded-sm bg-black h-14"></span>
-                                    <span class="w-0.5 rounded-sm bg-black h-19"></span>
-                                    <span class="w-1 rounded-sm bg-black h-24"></span>
+                                <div class="flex flex-col items-center gap-6">
+
+                                    <div class="w-full overflow-x-auto">
+                                        <svg id="barcode-transaksi" class="mx-auto"></svg>
+                                    </div>
+
+                                    <div class="flex justify-center">
+                                        <div id="qrcode-transaksi" class="rounded-xl bg-white p-3"></div>
+                                    </div>
                                 </div>
 
                                 <p class="mt-4 text-center text-xs font-semibold tracking-[0.3em] text-brown">
@@ -277,7 +268,7 @@
                         </button>
 
                         <a href="{{ route('home') }}"
-                           class="inline-flex h-14 items-center justify-center rounded-full bg-brown px-6 text-sm font-semibold text-white shadow-lg shadow-[#321c04]/20 transition hover:scale-[1.02] hover:opacity-95">
+                            class="inline-flex h-14 items-center justify-center rounded-full bg-brown px-6 text-sm font-semibold text-white shadow-lg shadow-[#321c04]/20 transition hover:scale-[1.02] hover:opacity-95">
                             Kembali ke Beranda
                         </a>
                     </div>
@@ -285,5 +276,29 @@
             </div>
         </section>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const kodeTransaksi = @json($kodeTransaksi);
+
+            JsBarcode("#barcode-transaksi", kodeTransaksi, {
+                format: "CODE128",
+                lineColor: "#000000",
+                width: 2,
+                height: 80,
+                displayValue: false,
+                margin: 0
+            });
+
+            new QRCode(document.getElementById("qrcode-transaksi"), {
+                text: kodeTransaksi,
+                width: 140,
+                height: 140
+            });
+        });
+    </script>
 </body>
+
 </html>

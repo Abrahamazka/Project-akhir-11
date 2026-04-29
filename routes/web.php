@@ -1,22 +1,19 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PeminjamanController;
+use App\Http\Controllers\PengembalianController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
-Route::get('/home', function () {
-    return view('index');
-})->name('home');
-Route::get('/form', function () {
-    return view('pinjam');
-})->name('pinjam');
-Route::get('/pengembalian', function () {
-    return view('balik');
-})->name('balik');
-Route::get('/identitas', function () {
-    return view('identitas') ;
-})->name('identitas');
-Route::get('/sukses', function () {
-    return view('sukses');
-})->name('sukses')  ;
+Route::view('/', 'welcome')->name('welcome');
+Route::view('/home', 'index')->name('home');
+
+Route::get('/form', [PeminjamanController::class, 'create'])->name('pinjam');
+Route::post('/form', [PeminjamanController::class, 'storeStep1'])->name('pinjam.store');
+
+Route::get('/identitas', [PeminjamanController::class, 'identitas'])->name('identitas');
+Route::post('/identitas', [PeminjamanController::class, 'storeIdentitas'])->name('identitas.store');
+
+Route::get('/sukses/{transaksi}', [PeminjamanController::class, 'sukses'])->name('sukses');
+
+Route::get('/pengembalian', [PengembalianController::class, 'index'])->name('pengembalian');
+Route::post('/pengembalian/{transaksi}/proses', [PengembalianController::class, 'proses'])->name('pengembalian.proses');

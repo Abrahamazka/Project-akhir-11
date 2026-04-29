@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,6 +33,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body class="min-h-screen bg-cream font-inter text-brown overflow-x-hidden">
 
     <div class="relative min-h-screen px-4 py-5 sm:px-6 lg:px-8">
@@ -39,13 +41,13 @@
         <div class="absolute left-10 top-24 grid grid-cols-8 gap-3 opacity-40">
             @for ($i = 0; $i < 48; $i++)
                 <span class="h-1 w-1 rounded-full bg-[#cdb9a7]"></span>
-            @endfor
+                @endfor
         </div>
 
         <div class="absolute bottom-16 right-10 grid grid-cols-8 gap-3 opacity-40">
             @for ($i = 0; $i < 48; $i++)
                 <span class="h-1 w-1 rounded-full bg-[#cdb9a7]"></span>
-            @endfor
+                @endfor
         </div>
 
         <div class="absolute right-0 top-32 h-72 w-72 rounded-full bg-[#f5c8aa]/30 blur-3xl"></div>
@@ -73,7 +75,7 @@
                     <a href="{{ route('pinjam') }}" class="rounded-full border border-[#f2b092] bg-[#fff3ec] px-5 py-2 text-sm font-semibold text-accent shadow-sm">
                         Peminjaman
                     </a>
-                    <a href="{{ route('balik') }}" class="rounded-full px-4 py-2 text-sm font-medium text-[#7b6b5d] transition hover:bg-[#f7efe7] hover:text-brown">
+                    <a href="{{ route('pengembalian') }}" class="rounded-full px-4 py-2 text-sm font-medium text-[#7b6b5d] transition hover:bg-[#f7efe7] hover:text-brown">
                         Pengembalian
                     </a>
                 </nav>
@@ -101,46 +103,54 @@
 
         <section class="relative z-10 mx-auto mt-10 mb-10 max-w-5xl">
             <div class="rounded-[10px] border border-white/60 bg-[#fffaf6]/90 p-6 shadow-soft backdrop-blur sm:p-8 md:p-10">
-                <form action="{{ route('identitas') }}" method="GET" class="space-y-6" required>
+                <form action="{{ route('pinjam.store') }}" method="POST" class="space-y-6">
+                    @csrf
+                    @if(session('error'))
+                    <div class="mb-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+                        {{ session('error') }}
+                    </div>
+                    @endif
 
                     <div class="grid gap-3 md:grid-cols-[220px_1fr] md:items-center">
-                        <label for="barang" class="text-sm font-semibold text-brown">
+                        <label for="barang_id" class="text-sm font-semibold text-brown">
                             Barang yang Dipinjam <span class="text-accent">*</span>
                         </label>
-                        <select id="barang" name="barang"
-                            class="h-14 w-full rounded-lg border border-[#dccfc2] bg-white px-4 text-sm text-brown outline-none transition focus:border-[#c8ad97] focus:ring-2 focus:ring-[#e8d7ca]">
-                            <option value="">Pilih barang</option>
-                            <option>Laptop</option>
-                            <option>Proyektor</option>
-                            <option>Kamera</option>
-                            <option>Arduino Kit</option>
-                            <option>RFID Reader</option>
-                            <option>Sensor IoT</option>
-                        </select>
+                        <div>
+                            <select
+                                id="barang_id"
+                                name="barang_id"
+                                class="h-14 w-full rounded-lg border border-[#dccfc2] bg-white px-4 text-sm text-brown outline-none transition focus:border-[#c8ad97] focus:ring-2 focus:ring-[#e8d7ca]">
+                                <option value="">Pilih barang</option>
+                                @foreach($barangs as $barang)
+                                <option value="{{ $barang->id }}" {{ old('barang_id') == $barang->id ? 'selected' : '' }}>
+                                    {{ $barang->nama_barang }} (Stok: {{ $barang->stok }})
+                                </option>
+                                @endforeach
+                            </select>
+                            @error('barang_id')
+                            <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
+                            @enderror
+                        </div>
                     </div>
 
                     <div class="grid gap-3 md:grid-cols-[220px_1fr] md:items-center">
                         <label for="tanggal_pinjam" class="text-sm font-semibold text-brown">
                             Tanggal Peminjaman <span class="text-accent">*</span>
                         </label>
-                        <input
-                            type="date"
-                            id="tanggal_pinjam"
-                            name="tanggal_pinjam"
-                            class="h-14 w-full rounded-lg border border-[#dccfc2] bg-white px-4 text-sm text-brown outline-none transition focus:border-[#c8ad97] focus:ring-2 focus:ring-[#e8d7ca]"
-                        >
+                        <input type="date" id="tanggal_pinjam" name="tanggal_pinjam" value="{{ old('tanggal_pinjam') }}" class="h-14 w-full rounded-2xl border border-[#dccfc2] bg-white px-4 text-sm text-brown outline-none transition focus:border-[#c8ad97] focus:ring-2 focus:ring-[#e8d7ca]">
+                        @error('tanggal_pinjam')
+                        <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div class="grid gap-3 md:grid-cols-[220px_1fr] md:items-center">
                         <label for="tanggal_kembali" class="text-sm font-semibold text-brown">
                             Tanggal Pengembalian <span class="text-accent">*</span>
                         </label>
-                        <input
-                            type="date"
-                            id="tanggal_kembali"
-                            name="tanggal_kembali"
-                            class="h-14 w-full rounded-lg border border-[#dccfc2] bg-white px-4 text-sm text-brown outline-none transition focus:border-[#c8ad97] focus:ring-2 focus:ring-[#e8d7ca]"
-                        >
+                        <input type="date" id="tanggal_kembali" name="tanggal_kembali" value="{{ old('tanggal_kembali') }}" class="h-14 w-full rounded-2xl border border-[#dccfc2] bg-white px-4 text-sm text-brown outline-none transition focus:border-[#c8ad97] focus:ring-2 focus:ring-[#e8d7ca]">
+                        @error('tanggal_kembali')
+                        <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div class="grid gap-3 md:grid-cols-[220px_1fr] md:items-start">
@@ -155,8 +165,10 @@
                                 rows="5"
                                 maxlength="300"
                                 placeholder="Jelaskan kebutuhan dan tujuan peminjaman barang secara singkat..."
-                                class="w-full rounded-lg border border-[#dccfc2] bg-white px-4 py-4 text-sm text-brown outline-none transition placeholder:text-[#b3a69a] focus:border-[#c8ad97] focus:ring-2 focus:ring-[#e8d7ca]"
-                            ></textarea>
+                                class="w-full rounded-2xl border border-[#dccfc2] bg-white px-4 py-4 text-sm text-brown outline-none transition placeholder:text-[#b3a69a] focus:border-[#c8ad97] focus:ring-2 focus:ring-[#e8d7ca]">{{ old('kebutuhan') }}</textarea>
+                            @error('kebutuhan')
+                            <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
+                            @enderror
                             <div class="mt-2 text-right text-sm text-[#9b8c80]">
                                 <span id="charCount">0</span> / 300
                             </div>
@@ -168,7 +180,7 @@
 
                         <div class="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
                             <a href="{{ route('home') }}"
-                               class="inline-flex h-14 items-center justify-center rounded-full border border-[#6d4d34] px-8 text-sm font-semibold text-brown transition hover:bg-[#f6ede5]">
+                                class="inline-flex h-14 items-center justify-center rounded-full border border-[#6d4d34] px-8 text-sm font-semibold text-brown transition hover:bg-[#f6ede5]">
                                 Kembali
                             </a>
 
@@ -182,8 +194,7 @@
 
                             <button
                                 type="submit"
-                                class="inline-flex h-14 items-center justify-center rounded-full bg-brown px-10 text-sm font-semibold text-white shadow-lg shadow-[#321c04]/20 transition hover:scale-[1.02] hover:opacity-95"
-                            >
+                                class="inline-flex h-14 items-center justify-center rounded-full bg-brown px-10 text-sm font-semibold text-white shadow-lg shadow-[#321c04]/20 transition hover:scale-[1.02] hover:opacity-95">
                                 Selanjutnya
                             </button>
                         </div>
@@ -199,7 +210,7 @@
         const tanggalPinjam = document.getElementById('tanggal_pinjam');
         const tanggalKembali = document.getElementById('tanggal_kembali');
 
-        kebutuhan.addEventListener('input', function () {
+        kebutuhan.addEventListener('input', function() {
             charCount.textContent = kebutuhan.value.length;
         });
 
@@ -207,7 +218,7 @@
         tanggalPinjam.min = today;
         tanggalKembali.min = today;
 
-        tanggalPinjam.addEventListener('change', function () {
+        tanggalPinjam.addEventListener('change', function() {
             tanggalKembali.min = tanggalPinjam.value;
             if (tanggalKembali.value && tanggalKembali.value < tanggalPinjam.value) {
                 tanggalKembali.value = '';
@@ -215,4 +226,5 @@
         });
     </script>
 </body>
+
 </html>

@@ -62,7 +62,7 @@
                     <a href="{{ route('pinjam') }}" class="rounded-full border border-[#f2b092] bg-[#fff3ec] px-5 py-2 text-sm font-semibold text-accent shadow-sm">
                         Peminjaman
                     </a>
-                    <a href="{{ route('balik') }}" class="rounded-full px-4 py-2 text-sm font-medium text-[#7b6b5d] transition hover:bg-[#f7efe7] hover:text-brown">
+                    <a href="{{ route('pengembalian') }}" class="rounded-full px-4 py-2 text-sm font-medium text-[#7b6b5d] transition hover:bg-[#f7efe7] hover:text-brown">
                         Pengembalian
                     </a>
                 </nav>
@@ -90,7 +90,8 @@
 
         <section class="relative z-10 mx-auto mt-10 max-w-6xl">
             <div class="rounded-[16px] border border-white/60 bg-[#fffaf6]/90 p-6 shadow-soft backdrop-blur sm:p-8 md:p-10">
-                <form action="{{ route('sukses') }}" method="GET" class="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
+                <form action="{{ route('identitas.store') }}" method="POST" enctype="multipart/form-data" class="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
+                    @csrf
                     <input type="hidden" name="barang" value="{{ request('barang') }}">
                     <input type="hidden" name="tanggal_pinjam" value="{{ request('tanggal_pinjam') }}">
                     <input type="hidden" name="tanggal_kembali" value="{{ request('tanggal_kembali') }}">
